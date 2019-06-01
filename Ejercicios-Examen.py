@@ -9,6 +9,12 @@ import numpy as np
 from skimage import data
 import matplotlib.pyplot as plt
 import pandas as pd
+import io
+import requests
+from scipy import misc
+
+
+
 
 print('****** EXAMEN JACINTO PALMA ******')
 
@@ -49,27 +55,11 @@ print(f'Mayor valor: {matriz_10_10.max()}')
 print(f'Menor valor: {matriz_10_10.min()}')
 
 print('10) Sacar los colores RGB unicos en una imagen (cuales rgb existen ej: 0, 0, 0 - 255,255,255 -> 2 colores)')
+
 camara = data.camera()
-print('Imagen original')
 plt.imshow(camara)
 plt.show(block=True)
 plt.interactive(False)
-
-plt.imshow(camara[:,:,0],vmin=0,vmax=1)
-plt.show(block=True)
-plt.interactive(False)
-plt.title("Canal Rojo")
-
-plt.imshow(camara[:,:,1],vmin=0,vmax=1)
-plt.show(block=True)
-plt.interactive(False)
-plt.title("Canal Verde")
-
-
-plt.imshow(camara[:,:,2],vmin=0,vmax=1)
-plt.show(block=True)
-plt.interactive(False)
-plt.title("Canal Azul")
 
 print('11) ¿Como crear una serie de una lista, diccionario o arreglo?')
 mylist = list('abcedfghijklmnopqrstuvwxyz')
@@ -158,6 +148,11 @@ frutas = pd.Series(np.random.choice(['manzana', 'banana', 'zanahoria'], 10))
 pesos = pd.Series(np.linspace(1, 10, 10))
 print(pesos.tolist())
 print(frutas.tolist())
+type(pesos.tolist())
+
+df = pd.DataFrame({'FRUTAS':frutas.tolist(), 'PESOS':pesos.tolist()})
+grupo =df.groupby('FRUTAS')
+grupo['PESOS'].mean()
 #> [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
 #> ['banana', 'carrot', 'apple', 'carrot', 'carrot', 'apple', 'banana', 'carrot', 'apple', 'carrot']
 
@@ -171,3 +166,9 @@ print(frutas.tolist())
 
 print('22)¿Como importar solo columnas especificas de un archivo csv?')
 #https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv.
+url="https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
+s=requests.get(url).content
+c=pd.read_csv(io.StringIO(s.decode('utf-8')))
+df = pd.DataFrame(c)
+df = df[["age","tax"]]
+print(df)
